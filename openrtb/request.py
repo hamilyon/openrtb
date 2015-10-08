@@ -999,3 +999,27 @@ class BidRequest(Object):
     @staticmethod
     def minimal(id, imp_id):
         return BidRequest(id=id, imp=[Impression(id=imp_id, banner=Banner())])
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'imp': [i.serialize() for i in self.imp],
+            'site': self.site.serialize(),
+            'app': self.app.serialize() if self.app else None,
+            'device': self.device.serialize(),
+            'user': self.user.serialize() if self.user else None,
+            'test': self.test,
+            'at': self.at.serialize(),
+            'tmax': self.tmax,
+            'wseat': self.wseat[:] if self.wseat else None,
+            'allimps': self.allimps,
+            'cur': self.cur[:] if self.cur else None,
+            'bcat': self.bcat[:] if self.bcat else None,
+            'badv': self.bcat[:] if self.badv else None,
+            'regs': self.regs.serialize() if self.regs else None,
+            'ext': self.ext.serialize() if self.ext else None,
+
+            'rtb_req': self.rtb_req,
+            'nonrtb_req': self.nonrtb_req,
+
+        }
