@@ -87,6 +87,39 @@ class Bid(Object):
     #: Placeholder for bidder-specific extensions to OpenRTB.
     ext = Field(Object)
 
+    @classmethod
+    def deserialize(cls, raw_data):
+        id = raw_data['id']
+        impid = raw_data['impid']
+        price = raw_data['price']
+
+        adid = raw_data.get('adid')
+        nurl = raw_data.get('nurl')
+        adm = raw_data.get('adm')
+        bundle = raw_data.get('bundle')
+        iurl = raw_data.get('iurl')
+        cid = raw_data.get('cid')
+        crid = raw_data.get('crid')
+        cat = raw_data.get('cat')
+        dealid = raw_data.get('dealid')
+        h = raw_data.get('h')
+        w = raw_data.get('w')
+
+        raw_ext = raw_data.get('ext')
+        ext = None if raw_ext is None else Object(**raw_ext)
+
+        raw_attrs = raw_data.get('nbr')
+        attr = None if raw_attrs is None else [constants.CreativeAttribute(raw_attr) for raw_attr in raw_attrs]
+        adomains = raw_data.get('adomain')
+
+        return cls(id=id, impid=impid, price=price, adid=adid, nurl=nurl, adm=adm, bundle=bundle,
+                   iurl=iurl, cid=cid, crid=crid, cat=cat, dealid=dealid, h=h, w=w, ext=ext,
+                   attr=attr, adomains=adomains)
+
+
+
+
+
 
 class SeatBid(Object):
 
@@ -114,6 +147,15 @@ class SeatBid(Object):
 
     #: Placeholder for bidder-specific extensions to OpenRTB.
     ext = Field(Object)
+
+    @classmethod
+    def deserialize(cls, raw_data):
+        bid = [Bid.deserialize(bid) for bid in raw_data['bid']]
+        # seat = Field(String)
+        # group = Field(int)
+        # ext = Field(Object)
+        return cls(bid=bid)
+
 
 
 class BidResponse(Object):
@@ -150,6 +192,20 @@ class BidResponse(Object):
 
     #: Placeholder for bidder-specific extensions to OpenRTB.
     ext = Field(Object)
+
+    @classmethod
+    def deserialize(cls, raw_data):
+        id = raw_data['id']
+        seatbid = [SeatBid.deserialize(seatbid) for seatbid in raw_data['seatbid']]
+        bidid = raw_data.get('bidid')
+        cur = raw_data.get('cur')
+        customdata = raw_data.get('customdata')
+        raw_nbr = raw_data.get('nbr')
+        nbr = None if raw_nbr is None else constants.NoBidReason(raw_nbr)
+        raw_ext = raw_data.get('ext')
+        ext = None if raw_ext is None else Object(**raw_ext)
+
+        return cls(id=id, seatbid=seatbid, bidid=bidid, cur=cur, customdata=customdata, nbr=nbr, ext=ext)
 
     @classmethod
     def minimal(cls, id, bid_id, bid_impid, bid_price):
