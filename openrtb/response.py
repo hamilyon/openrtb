@@ -91,7 +91,7 @@ class Bid(Object):
     def deserialize(cls, raw_data):
         id = raw_data['id']
         impid = raw_data['impid']
-        price = raw_data['price']
+        price = Decimal(raw_data['price'])
 
         adid = raw_data.get('adid')
         nurl = raw_data.get('nurl')
@@ -151,10 +151,12 @@ class SeatBid(Object):
     @classmethod
     def deserialize(cls, raw_data):
         bid = [Bid.deserialize(bid) for bid in raw_data['bid']]
-        # seat = Field(String)
-        # group = Field(int)
-        # ext = Field(Object)
-        return cls(bid=bid)
+        seat = raw_data.get('seat')
+        group = raw_data.get('group')
+        raw_ext = raw_data.get('ext')
+        ext = None if raw_ext is None else Object(**raw_ext)
+
+        return cls(bid=bid, seat=seat, group=group, ext=ext)
 
 
 
