@@ -1001,15 +1001,17 @@ class BidRequest(Object):
         return BidRequest(id=id, imp=[Impression(id=imp_id, banner=Banner())])
 
     def serialize(self):
-        return {
+        source = self.__dict__.copy()
+
+        serialized = {
             'id': self.id,
             'imp': [i.serialize() for i in self.imp],
-            'site': self.site.serialize(),
+            'site': self.site.serialize() if self.site else None,
             'app': self.app.serialize() if self.app else None,
-            'device': self.device.serialize(),
+            'device': self.device.serialize() if self.device else None,
             'user': self.user.serialize() if self.user else None,
             'test': self.test,
-            'at': self.at.serialize(),
+            'at': self.at.serialize() if 'at' in self.__dict__ else None,
             'tmax': self.tmax,
             'wseat': self.wseat[:] if self.wseat else None,
             'allimps': self.allimps,
@@ -1021,5 +1023,15 @@ class BidRequest(Object):
 
             'rtb_req': self.rtb_req,
             'nonrtb_req': self.nonrtb_req,
-
+            'mimes': self.mimes if self.mimes else None,
+            'target_dsp': self.target_dsp if self.target_dsp else None,
+            'pmp': self.pmp if self.pmp else None,
+            'priority_dsp': self.priority_dsp if self.priority_dsp else None,
         }
+
+        pruned = {k: v for k, v in serialized.items() if v is not None}
+        absent = set(source) - set(pruned)
+        not_in_source = set(pruned) - set(source)
+        if absent or not_in_source:
+            print('absent', absent, 'not_in_source', not_in_source)
+        return pruned

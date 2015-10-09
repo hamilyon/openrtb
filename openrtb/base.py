@@ -96,6 +96,8 @@ class Object(object, metaclass=ObjectMeta):
             return value.serialize()
         elif isinstance(value, list):
             return [self.serialize_value(v) for v in value]
+        elif isinstance(value, dict):
+            return value.copy()
         else:
             return value
 
