@@ -871,7 +871,7 @@ class Impression(Object):
 
     #: Currency specified using ISO-4217 alpha codes. This may be different
     #: from bid currency returned by bidder if this is allowed by the exchange.
-    bidfloorcur = Field(String, default='USD')
+    bidfloorcur = Field(String)
 
     #: Flag to indicate if the impression requires secure HTTPS URL creative
     #: assets and markup, where 0 = non-secure, 1 = secure. If omitted, the
