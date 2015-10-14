@@ -37,8 +37,6 @@ class Field(object):
 def String(value):
     if isinstance(value, str):
         return value
-    if isinstance(value, str):
-        return value.decode('utf-8', errors='ignore')
 
     return str(value)
 
@@ -73,7 +71,7 @@ class Object(object, metaclass=ObjectMeta):
     validate = False
 
     def __init__(self, **kwargs):
-        if self.validate:
+        if Object.validate:
             for fname in self._required:
                 if fname not in kwargs:
                     raise ValidationError('{}.{} is required'.format(self.__class__.__name__, fname))

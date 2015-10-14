@@ -105,9 +105,6 @@ class TestFields(unittest.TestCase):
     def test_utf8(self):
         self.assertEqual(openrtb.base.String('утф'), 'утф')
 
-    def test_bad_utf8(self):
-        self.assertEqual(openrtb.base.String('x\xff'), 'x')
-
     def test_convert_to_unicode(self):
         self.assertEqual(openrtb.base.String(1), '1')
 
@@ -127,8 +124,10 @@ class TestFields(unittest.TestCase):
 
 class TestObjects(unittest.TestCase):
     def test_required(self):
+        openrtb.base.Object.validate = True
         with self.assertRaises(openrtb.base.ValidationError):
             openrtb.request.BidRequest()
+        openrtb.base.Object.validate = False
 
     def test_extra(self):
         s = openrtb.request.Site(extra='extra')

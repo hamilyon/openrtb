@@ -889,7 +889,6 @@ class Impression(Object):
     ext = Field(Object)
 
     def serialize(self):
-        from IPython import embed; embed();
         serialized = {
             'id': self.id,
             'banner': self.banner.serialize() if self.banner else None,
