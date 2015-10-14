@@ -70,11 +70,13 @@ class ObjectMeta(type):
 
 class Object(object, metaclass=ObjectMeta):
     _fields = {}
+    validate = False
 
     def __init__(self, **kwargs):
-        for fname in self._required:
-            if fname not in kwargs:
-                raise ValidationError('{}.{} is required'.format(self.__class__.__name__, fname))
+        if self.validate:
+            for fname in self._required:
+                if fname not in kwargs:
+                    raise ValidationError('{}.{} is required'.format(self.__class__.__name__, fname))
 
         for k, v in kwargs.items():
             setattr(self, k, v)

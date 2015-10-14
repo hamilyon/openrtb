@@ -888,6 +888,30 @@ class Impression(Object):
     #: Placeholder for exchange-specific extensions to OpenRTB.
     ext = Field(Object)
 
+    def serialize(self):
+        from IPython import embed; embed();
+        serialized = {
+            'id': self.id,
+            'banner': self.banner.serialize() if self.banner else None,
+            'video': self.video.serialize() if self.video else None,
+            'native': self.native.serialize() if self.native else None,
+            'pmp': self.pmp.serialize() if self.pmp else None,
+            'displaymanager': self.displaymanager if self.displaymanager else None,
+
+            'secure': self.secure,
+            'bidfloorcur': self.bidfloorcur if self.bidfloorcur else None,
+            'bidfloor': self.bidfloor,
+            'tagid': self.tagid,
+            'instl': self.instl,
+            'displaymanagerver': self.displaymanagerver,
+            'iframebuster': self.iframebuster[:] if self.iframebuster else None,
+
+            'ext': self.ext.serialize() if self.ext else None,
+        }
+
+        pruned = {k: v for k, v in serialized.items() if v is not None}
+
+        return pruned
 
 class Regulations(Object):
 
@@ -1030,8 +1054,5 @@ class BidRequest(Object):
         }
 
         pruned = {k: v for k, v in serialized.items() if v is not None}
-        absent = set(source) - set(pruned)
-        not_in_source = set(pruned) - set(source)
-        if absent or not_in_source:
-            print('absent', absent, 'not_in_source', not_in_source)
         return pruned
+
