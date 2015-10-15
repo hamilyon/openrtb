@@ -1048,7 +1048,6 @@ class BidRequest(Object):
             'nonrtb_req': self.nonrtb_req,
             'mimes': self.mimes if self.mimes else None,
             'target_dsp': self.target_dsp if self.target_dsp else None,
-            'pmp': self.pmp if self.pmp else None,
             'priority_dsp': self.priority_dsp if self.priority_dsp else None,
         }
 
